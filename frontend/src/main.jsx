@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./App";
 import AuthProvider from "./context/AuthContext";
 import "./styles.css";
@@ -21,12 +21,13 @@ import SignUp from "./routes/SignUp";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <HashRouter>
+    <BrowserRouter>
       <AuthProvider>
         <Routes>
           <Route element={<App />}>
             <Route path="/" element={<Home />}>
               <Route index element={<HomeArticles />} />
+              <Route path="tag/:tag" element={<HomeArticles />} />
             </Route>
 
             <Route path="login" element={<Login />} />
@@ -50,7 +51,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
-    </HashRouter>
+    </BrowserRouter>
   </React.StrictMode>,
   );
 
