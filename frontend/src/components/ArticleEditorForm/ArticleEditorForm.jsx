@@ -5,15 +5,16 @@ import getArticle from "../../services/getArticle";
 import setArticle from "../../services/setArticle";
 import FormFieldset from "../FormFieldset";
 
-const emptyForm = { title: "", description: "", body: "", tagList: "" };
+const emptyForm = { title: "", description: "", body: "", tagList: [] };
 
 function ArticleEditorForm() {
   const { state } = useLocation();
   const [{ title, description, body, tagList }, setForm] = useState(
-    state || emptyForm,
+    state ? { ...emptyForm, ...state, tagList: state.tagList || [] } : emptyForm,
   );
+  const [tagInput, setTagInput] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { isAuth, headers, loggedUser } = useAuth();
+  const { isAuth, headers, loggedUser, status } = useAuth();
 
   const navigate = useNavigate();
   const { slug } = useParams();
@@ -23,17 +24,18 @@ function ArticleEditorForm() {
     if (!isAuth) return redirect();
 
     if (state || !slug) return;
+    if (status === "loading") return;
 
     getArticle({ headers, slug })
-      .then(({ author: { username }, body, description, tagList, title }) => {
+      .then(({ author: { username } = {}, body, description, tagList, title }) => {
         if (username !== loggedUser.username) redirect();
 
-        setForm({ body, description, tagList, title });
+        setForm({ body, description, tagList: tagList || [], title });
       })
       .catch(console.error);
 
     return () => setForm(emptyForm);
-  }, [headers, isAuth, loggedUser.username, navigate, slug, state]);
+  }, [headers, isAuth, loggedUser.username, navigate, slug, state, status]);
 
   const inputHandler = (e) => {
     const type = e.target.name;
@@ -42,10 +44,31 @@ function ArticleEditorForm() {
     setForm((form) => ({ ...form, [type]: value }));
   };
 
-  const tagsInputHandler = (e) => {
-    const value = e.target.value;
+  const tagInputChange = (e) => {
+    setTagInput(e.target.value);
+  };
 
-    setForm((form) => ({ ...form, tagList: value.split(/,| /) }));
+  const tagInputKeyDown = (e) => {
+    if (e.key !== "Enter") return;
+
+    e.preventDefault();
+
+    const tag = tagInput.trim();
+    if (!tag) return;
+
+    setForm((form) =>
+      form.tagList.includes(tag)
+        ? form
+        : { ...form, tagList: [...form.tagList, tag] },
+    );
+    setTagInput("");
+  };
+
+  const removeTag = (tag) => {
+    setForm((form) => ({
+      ...form,
+      tagList: form.tagList.filter((t) => t !== tag),
+    }));
   };
 
   const formSubmit = (e) => {
@@ -63,7 +86,6 @@ function ArticleEditorForm() {
         <FormFieldset
           placeholder="Article Title"
           name="title"
-          required
           value={title}
           handler={inputHandler}
         ></FormFieldset>
@@ -72,7 +94,6 @@ function ArticleEditorForm() {
           normal
           placeholder="What's this article about?"
           name="description"
-          required
           value={description}
           handler={inputHandler}
         ></FormFieldset>
@@ -83,24 +104,31 @@ function ArticleEditorForm() {
             rows="8"
             placeholder="Write your article (in markdown)"
             name="body"
-            required
             value={body}
             onChange={inputHandler}
           ></textarea>
         </fieldset>
 
-        <FormFieldset
-          normal
-          placeholder="Enter tags"
-          name="tags"
-          value={tagList}
-          handler={tagsInputHandler}
-        >
-          <div className="tag-list"></div>
-        </FormFieldset>
+        <fieldset className="form-group">
+          <input
+            className="form-control"
+            placeholder="Enter tags"
+            value={tagInput}
+            onChange={tagInputChange}
+            onKeyDown={tagInputKeyDown}
+          />
+          <div className="tag-list">
+            {tagList.map((tag) => (
+              <span className="tag-default tag-pill" key={tag}>
+                <i className="ion-close-round" onClick={() => removeTag(tag)}></i>{" "}
+                {tag}
+              </span>
+            ))}
+          </div>
+        </fieldset>
 
         <button className="btn btn-lg pull-xs-right btn-primary" type="submit">
-          {slug ? "Update Article" : "Publish Article"}
+          Publish Article
         </button>
       </fieldset>
     </form>
