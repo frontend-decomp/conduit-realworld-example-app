@@ -4,8 +4,9 @@ import { useAuth } from "../../context/AuthContext";
 import postComment from "../../services/postComment";
 import Avatar from "../Avatar";
 
-function CommentEditor({ updateComments }) {
+function CommentEditor({ addComment }) {
   const [{ body }, setForm] = useState({ body: "" });
+  const [errorMessage, setErrorMessage] = useState("");
   const { headers, isAuth, loggedUser } = useAuth();
   const { username, image } = loggedUser || {};
   const { slug } = useParams();
@@ -16,9 +17,12 @@ function CommentEditor({ updateComments }) {
     if (body.trim() === "") return;
 
     postComment({ body, headers, slug })
-      .then(updateComments)
-      .then(setForm({ body: "" }))
-      .catch(console.error);
+      .then((comment) => {
+        setErrorMessage("");
+        addComment(comment);
+        setForm({ body: "" });
+      })
+      .catch(setErrorMessage);
   };
 
   const handleChange = (e) => {
@@ -27,6 +31,7 @@ function CommentEditor({ updateComments }) {
 
   return isAuth ? (
     <form className="card comment-form" onSubmit={handleSubmit}>
+      {errorMessage && <span className="error-messages">{errorMessage}</span>}
       <div className="card-block">
         <textarea
           className="form-control"
