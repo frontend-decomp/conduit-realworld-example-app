@@ -432,7 +432,7 @@ test.describe('Error Handling - 500 Internal Server Error', () => {
     // Should show error state or fallback, not crash
     await expect(page.locator('nav.navbar')).toBeVisible();
     // Profile container should exist (even if empty)
-    await expect(page.locator('.profile-page, .user-info')).toBeVisible();
+    await expect(page.locator('.profile-page, .user-info').first()).toBeVisible();
   });
 
   test('should handle network error on user profile load', async ({ page }) => {
@@ -443,7 +443,7 @@ test.describe('Error Handling - 500 Internal Server Error', () => {
     // Should not crash
     await expect(page.locator('nav.navbar')).toBeVisible();
     // Profile container should exist (even if empty)
-    await expect(page.locator('.profile-page, .user-info')).toBeVisible();
+    await expect(page.locator('.profile-page, .user-info').first()).toBeVisible();
   });
 
   test('should handle 500 on article detail load', async ({ page }) => {
@@ -904,6 +904,6 @@ test.describe('Error Handling - Edge Cases', () => {
     // Should show appropriate message, not crash
     await expect(page.locator('nav.navbar')).toBeVisible();
     // Profile page container should still render
-    await expect(page.locator('.profile-page, .user-info')).toBeVisible();
+    await expect(page.locator('.profile-page, .user-info').first()).toBeVisible();
   });
 });

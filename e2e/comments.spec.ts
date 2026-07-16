@@ -108,7 +108,7 @@ test.describe('Comments', () => {
     // Wait for Angular to complete auth check - either comment form OR sign in link appears
     await page2.waitForSelector('textarea[placeholder="Write a comment..."], a[href="/login"]', { timeout: 10000 });
     // Should see sign in/sign up links instead of comment form
-    await expect(page2.locator('a[href="/login"]')).toBeVisible();
+    await expect(page2.locator('a[href="/login"]').first()).toBeVisible();
     await expect(page2.locator('textarea[placeholder="Write a comment..."]')).not.toBeVisible();
     await context2.close();
   });
