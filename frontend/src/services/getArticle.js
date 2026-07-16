@@ -1,13 +1,13 @@
 import axios from "axios";
-import errorHandler from "../helpers/errorHandler";
 
 async function getArticle({ headers, slug }) {
   try {
-    const { data } = await axios({ headers, url: `api/articles/${slug}` });
+    const { data } = await axios({ headers, url: `/api/articles/${slug}` });
 
-    return data.article;
+    return data && typeof data.article === "object" && data.article ? data.article : {};
   } catch (error) {
-    errorHandler(error);
+    console.error(error);
+    return {};
   }
 }
 

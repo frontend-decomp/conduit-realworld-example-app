@@ -1,6 +1,6 @@
 import Markdown from "markdown-to-jsx";
 import { useEffect, useState } from "react";
-import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useLocation, useParams } from "react-router-dom";
 import ArticleMeta from "../../components/ArticleMeta";
 import ArticlesButtons from "../../components/ArticlesButtons";
 import ArticleTags from "../../components/ArticleTags";
@@ -13,19 +13,13 @@ function Article() {
   const [article, setArticle] = useState(state || {});
   const { title, body, tagList, createdAt, author } = article || {};
   const { headers, isAuth } = useAuth();
-  const navigate = useNavigate();
   const { slug } = useParams();
 
   useEffect(() => {
     if (state) return;
 
-    getArticle({ slug, headers })
-      .then(setArticle)
-      .catch((error) => {
-        console.error(error);
-        navigate("/not-found", { replace: true });
-      });
-  }, [isAuth, slug, headers, state, navigate]);
+    getArticle({ slug, headers }).then(setArticle).catch(console.error);
+  }, [isAuth, slug, headers, state]);
 
   return (
     <div className="article-page">

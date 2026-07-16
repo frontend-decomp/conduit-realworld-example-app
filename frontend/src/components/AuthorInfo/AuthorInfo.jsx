@@ -1,6 +1,6 @@
 import Markdown from "markdown-to-jsx";
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import getProfile from "../../services/getProfile";
 import Avatar from "../Avatar";
@@ -13,18 +13,12 @@ function AuthorInfo() {
   );
   const { headers, loggedUser } = useAuth();
   const { username } = useParams();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (state && state.bio === bio) return;
 
-    getProfile({ headers, username })
-      .then(setAuthor)
-      .catch((error) => {
-        console.error(error);
-        navigate("/not-found", { replace: true });
-      });
-  }, [username, headers, state, navigate]);
+    getProfile({ headers, username }).then(setAuthor).catch(console.error);
+  }, [username, headers, state]);
 
   const followHandler = ({ followersCount, following }) => {
     setAuthor((prev) => ({ ...prev, followersCount, following }));
@@ -35,7 +29,7 @@ function AuthorInfo() {
       <Avatar alt={username} className="user-img" src={image} />
       <h4>{username}</h4>
 
-      {bio && <Markdown options={{ forceBlock: true }}>{bio}</Markdown>}
+      {bio ? <Markdown options={{ forceBlock: true }}>{bio}</Markdown> : <p></p>}
 
       {username === loggedUser.username ? (
         <Link

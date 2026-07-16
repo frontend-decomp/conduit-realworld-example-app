@@ -1,13 +1,13 @@
 import axios from "axios";
-import errorHandler from "../helpers/errorHandler";
 
 async function getTags() {
   try {
     const { data } = await axios({ url: "/api/tags" });
 
-    return data.tags;
+    return data && Array.isArray(data.tags) ? data.tags : [];
   } catch (error) {
-    errorHandler(error);
+    console.error(error);
+    return [];
   }
 }
 

@@ -1,13 +1,13 @@
 import axios from "axios";
-import errorHandler from "../helpers/errorHandler";
 
 async function getComments({ slug }) {
   try {
-    const { data } = await axios({ url: `api/articles/${slug}/comments` });
+    const { data } = await axios({ url: `/api/articles/${slug}/comments` });
 
-    return data.comments;
+    return data && Array.isArray(data.comments) ? data.comments : [];
   } catch (error) {
-    errorHandler(error);
+    console.error(error);
+    return [];
   }
 }
 
