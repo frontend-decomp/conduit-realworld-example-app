@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import getArticles from "../services/getArticles";
 
-function useArticles({ location, tabName, tagName, username }) {
+function useArticles({ location, page = 1, tagName, username }) {
   const [{ articles, articlesCount }, setArticlesData] = useState({
     articles: [],
     articlesCount: 0,
@@ -11,15 +11,14 @@ function useArticles({ location, tabName, tagName, username }) {
   const { headers } = useAuth();
 
   useEffect(() => {
-    if (!headers && tabName === "feed") return;
+    if (!headers && location === "feed") return;
 
     setLoading(true);
 
-    getArticles({ headers, location, tabName, tagName, username })
+    getArticles({ headers, location, page, tagName, username })
       .then(setArticlesData)
-      .catch(console.error)
       .finally(() => setLoading(false));
-  }, [headers, location, tabName, tagName, username]);
+  }, [headers, location, page, tagName, username]);
 
   return { articles, articlesCount, loading, setArticlesData };
 }

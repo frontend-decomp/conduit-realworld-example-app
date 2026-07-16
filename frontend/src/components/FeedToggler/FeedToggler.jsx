@@ -1,19 +1,41 @@
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useFeedContext } from "../../context/FeedContext";
-import FeedNavLink from "./FeedNavLink";
 
 function FeedToggler() {
   const { isAuth } = useAuth();
-  const { tabName, tagName } = useFeedContext();
+  const { tag } = useParams();
+  const [searchParams] = useSearchParams();
+
+  const isFollowing = searchParams.get("feed") === "following";
+  const isGlobal = !isFollowing && !tag;
 
   return (
     <div className="feed-toggle">
       <ul className="nav nav-pills outline-active">
-        {isAuth && <FeedNavLink name="feed" text="Your Feed" />}
+        {isAuth && (
+          <li className="nav-item">
+            <Link
+              className={`nav-link ${isFollowing ? "active" : ""}`}
+              to="/?feed=following"
+            >
+              Your Feed
+            </Link>
+          </li>
+        )}
 
-        <FeedNavLink name="global" text="Global Feed" />
+        <li className="nav-item">
+          <Link className={`nav-link ${isGlobal ? "active" : ""}`} to="/">
+            Global Feed
+          </Link>
+        </li>
 
-        {tabName === "tag" && <FeedNavLink icon name="tag" text={tagName} />}
+        {tag && (
+          <li className="nav-item">
+            <Link className="nav-link active" to={`/tag/${encodeURIComponent(tag)}`}>
+              <i className="ion-pound"></i> {tag}
+            </Link>
+          </li>
+        )}
       </ul>
     </div>
   );

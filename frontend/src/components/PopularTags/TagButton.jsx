@@ -1,16 +1,14 @@
-import { useFeedContext } from "../../context/FeedContext";
+import { Link } from "react-router-dom";
 
 function TagButton({ tagsList }) {
-  const { changeTab } = useFeedContext();
-
-  const handleClick = (e) => {
-    changeTab(e, "tag");
-  };
-
   return tagsList.slice(0, 50).map((name) => (
-    <button className="tag-pill tag-default" key={name} onClick={handleClick}>
+    <Link
+      className="tag-pill tag-default"
+      key={name}
+      to={`/tag/${encodeURIComponent(name)}`}
+    >
       {name}
-    </button>
+    </Link>
   ));
 }
 

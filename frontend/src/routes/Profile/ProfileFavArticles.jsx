@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import ArticlesPagination from "../../components/ArticlesPagination";
 import ArticlesPreview from "../../components/ArticlesPreview";
@@ -5,9 +6,11 @@ import useArticleList from "../../hooks/useArticles";
 
 function ProfileFavArticles() {
   const { username } = useParams();
+  const [page, setPage] = useState(1);
 
   const { articles, articlesCount, loading, setArticlesData } = useArticleList({
     location: "favorites",
+    page,
     username,
   });
 
@@ -25,13 +28,12 @@ function ProfileFavArticles() {
 
       <ArticlesPagination
         articlesCount={articlesCount}
-        location="favorites"
-        updateArticles={setArticlesData}
-        username={username}
+        onPageChange={setPage}
+        page={page}
       />
     </>
   ) : (
-    <div className="article-preview">{username} doesn't have favorites.</div>
+    <div className="empty-feed-message">{username} doesn't have favorites.</div>
   );
 }
 
