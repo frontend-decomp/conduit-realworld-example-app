@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import userLogout from "../../services/userLogout";
 import userUpdate from "../../services/userUpdate";
 import FormFieldset from "../FormFieldset";
 
@@ -15,11 +16,22 @@ function SettingsForm() {
   });
 
   const [inactive, setInactive] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!isAuth) navigate("/");
   }, [isAuth, loggedUser, navigate]);
+
+  useEffect(() => {
+    setForm({
+      bio: loggedUser.bio || "",
+      email: loggedUser.email || "",
+      image: loggedUser.image || "",
+      password: "",
+      username: loggedUser.username || "",
+    });
+  }, [loggedUser]);
 
   const inputHandler = (e) => {
     const name = e.target.name;
@@ -34,16 +46,30 @@ function SettingsForm() {
 
     if (inactive) return;
 
-    userUpdate({ headers, bio, email, image, password, username })
-      .then(setAuthState)
-      .catch(console.error);
     setInactive(true);
+
+    userUpdate({ headers, bio, email, image, password, username })
+      .then((result) => {
+        setErrorMessage("");
+        setAuthState(result);
+        navigate(`/profile/${result.loggedUser.username}`);
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+        setInactive(false);
+      });
+  };
+
+  const handleLogout = () => {
+    setAuthState(userLogout);
   };
 
   return (
     isAuth && (
       <form onSubmit={formSubmit}>
         <fieldset>
+          {errorMessage && <span className="error-messages">{errorMessage}</span>}
+
           <FormFieldset
             placeholder="URL of profile picture"
             name="image"
@@ -95,6 +121,16 @@ function SettingsForm() {
             </button>
           )}
         </fieldset>
+
+        <hr />
+
+        <button
+          type="button"
+          className="btn btn-outline-danger"
+          onClick={handleLogout}
+        >
+          Or click here to logout
+        </button>
       </form>
     )
   );

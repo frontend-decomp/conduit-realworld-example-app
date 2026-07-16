@@ -7,8 +7,9 @@ function FavButton({ favorited, favoritesCount, handler, right, slug, text }) {
   const { headers, isAuth } = useAuth();
 
   const buttonPosition = right ? "pull-xs-right" : "";
-  const buttonStyle = favorited ? "active" : "";
-  const buttonText = text ? "Favorite" : !isAuth ? "" : "";
+  const buttonClass = favorited ? "btn-primary" : "btn-outline-primary";
+  const actionLabel = favorited ? "Unfavorite" : "Favorite";
+  const buttonText = text ? `${actionLabel} Article` : actionLabel;
 
   const handleClick = () => {
     if (!isAuth) return alert("You need to login first");
@@ -23,7 +24,7 @@ function FavButton({ favorited, favoritesCount, handler, right, slug, text }) {
 
   return (
     <button
-      className={`btn btn-sm btn-outline-primary ${buttonPosition} ${buttonStyle}`}
+      className={`btn btn-sm ${buttonClass} ${buttonPosition}`}
       disabled={loading}
       onClick={handleClick}
     >
