@@ -1,5 +1,5 @@
 function userLogout() {
-  localStorage.removeItem("loggedUser");
+  localStorage.removeItem("jwtToken");
 
   return {
     headers: null,

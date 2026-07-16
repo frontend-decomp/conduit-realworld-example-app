@@ -7,16 +7,12 @@ async function userUpdate({ headers, bio, email, image, password, username }) {
       data: { user: { bio, email, image, password, username } },
       headers,
       method: "PUT",
-      url: "api/user",
+      url: "/api/user",
     });
 
     const { user } = data;
 
-    const loggedIn = { headers, isAuth: true, loggedUser: user };
-
-    localStorage.setItem("loggedUser", JSON.stringify(loggedIn));
-
-    return loggedIn;
+    return { headers, isAuth: true, loggedUser: user };
   } catch (error) {
     errorHandler(error);
   }

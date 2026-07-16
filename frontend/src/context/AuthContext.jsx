@@ -7,11 +7,10 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-const loggedIn = JSON.parse(localStorage.getItem("loggedUser"));
+const initialToken = localStorage.getItem("jwtToken");
 
-const authState = {
+const loggedOutState = {
   headers: null,
-  isAuth: false,
   loggedUser: {
     bio: null,
     email: "",
@@ -21,21 +20,62 @@ const authState = {
   },
 };
 
+const initialState = initialToken
+  ? {
+      headers: { Authorization: `Token ${initialToken}` },
+      loggedUser: {
+        bio: null,
+        email: "",
+        image: null,
+        token: initialToken,
+        username: "",
+      },
+    }
+  : loggedOutState;
+
 function AuthProvider({ children }) {
-  const [{ headers, isAuth, loggedUser }, setAuthState] = useState(
-    loggedIn || authState,
-  );
+  const [{ headers, loggedUser }, setAuthState] = useState(initialState);
+  const [status, setStatus] = useState(initialToken ? "loading" : "unauthenticated");
+  const isAuth = Boolean(headers);
 
   useEffect(() => {
-    if (!headers) return;
+    if (!headers) {
+      setStatus("unauthenticated");
+      return;
+    }
+
+    setStatus((prev) => (prev === "authenticated" ? prev : "loading"));
 
     getUser({ headers })
-      .then((loggedUser) => setAuthState((prev) => ({ ...prev, loggedUser })))
-      .catch(console.error);
-  }, [headers, setAuthState]);
+      .then((loggedUser) => {
+        setAuthState((prev) => ({ ...prev, loggedUser }));
+        setStatus("authenticated");
+      })
+      .catch((error) => {
+        if (error.kind === "auth") {
+          localStorage.removeItem("jwtToken");
+          setAuthState(loggedOutState);
+          setStatus("unauthenticated");
+        } else {
+          setStatus("unavailable");
+        }
+      });
+  }, [headers]);
+
+  useEffect(() => {
+    if (loggedUser?.token) localStorage.setItem("jwtToken", loggedUser.token);
+  }, [loggedUser]);
+
+  useEffect(() => {
+    window.__conduit_debug__ = {
+      getToken: () => localStorage.getItem("jwtToken"),
+      getAuthState: () => status,
+      getCurrentUser: () => (status === "authenticated" ? { ...loggedUser } : null),
+    };
+  });
 
   return (
-    <AuthContext.Provider value={{ headers, isAuth, loggedUser, setAuthState }}>
+    <AuthContext.Provider value={{ headers, isAuth, loggedUser, status, setAuthState }}>
       {children}
     </AuthContext.Provider>
   );

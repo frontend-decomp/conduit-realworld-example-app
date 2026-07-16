@@ -6,17 +6,13 @@ async function userSignUp({ username, email, password }) {
     const { data } = await axios({
       data: { user: { username, email, password } },
       method: "POST",
-      url: "api/users",
+      url: "/api/users",
     });
 
     const { user } = data;
     const headers = { Authorization: `Token ${user.token}` };
 
-    const loggedIn = { headers, isAuth: true, loggedUser: user };
-
-    localStorage.setItem("loggedUser", JSON.stringify(loggedIn));
-
-    return loggedIn;
+    return { headers, isAuth: true, loggedUser: user };
   } catch (error) {
     errorHandler(error);
   }
