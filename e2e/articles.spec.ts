@@ -201,7 +201,7 @@ test.describe('Articles', () => {
 
     // Should be on article page
     await expect(page).toHaveURL(/\/article\/.+/);
-    await expect(page.locator('h1')).toHaveText(article.title);
+    await expect(page.locator('.banner h1')).toHaveText(article.title);
   });
 
   test('should display article preview correctly', async ({ page }) => {

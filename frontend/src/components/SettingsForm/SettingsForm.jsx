@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import userLogout from "../../services/userLogout";
@@ -6,7 +6,7 @@ import userUpdate from "../../services/userUpdate";
 import FormFieldset from "../FormFieldset";
 
 function SettingsForm() {
-  const { headers, isAuth, loggedUser, setAuthState } = useAuth();
+  const { headers, isAuth, loggedUser, setAuthState, status } = useAuth();
   const [{ bio, email, image, password, username }, setForm] = useState({
     bio: loggedUser.bio || "",
     email: loggedUser.email,
@@ -18,12 +18,17 @@ function SettingsForm() {
   const [inactive, setInactive] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const hasSyncedRef = useRef(false);
 
   useEffect(() => {
     if (!isAuth) navigate("/");
   }, [isAuth, loggedUser, navigate]);
 
   useEffect(() => {
+    if (hasSyncedRef.current) return;
+    if (status !== "authenticated") return;
+
+    hasSyncedRef.current = true;
     setForm({
       bio: loggedUser.bio || "",
       email: loggedUser.email || "",
@@ -31,7 +36,7 @@ function SettingsForm() {
       password: "",
       username: loggedUser.username || "",
     });
-  }, [loggedUser]);
+  }, [loggedUser, status]);
 
   const inputHandler = (e) => {
     const name = e.target.name;
