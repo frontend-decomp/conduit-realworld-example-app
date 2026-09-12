@@ -16,15 +16,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-(async () => {
-  try {
-    await sequelize.sync({ alter: true });
-    console.log(`Connection with ${env} database has been established.`);
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-  }
-})();
-
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("../frontend/dist"));
 } else {
@@ -40,6 +31,18 @@ app.get("/*any", (req, res) =>
 );
 app.use(errorHandler);
 
-app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`),
-);
+(async () => {
+  try {
+    await sequelize.sync({ alter: true });
+    console.log(`Connection with ${env} database has been established.`);
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
+
+  // Only start accepting requests once the schema sync above has finished,
+  // otherwise early requests (e.g. the first e2e test right after boot) can
+  // race ahead of it and hit tables/columns that aren't ready yet.
+  app.listen(PORT, () =>
+    console.log(`Server running on http://localhost:${PORT}`),
+  );
+})();
