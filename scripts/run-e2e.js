@@ -70,7 +70,7 @@ async function main() {
     await syncSchema();
   }
 
-  sqlz("db:seed:all");
+  sqlz("db:seed", "--seed", "create-demo-users.js");
 
   run("npx", ["playwright", "test", ...passThroughArgs]);
 }
