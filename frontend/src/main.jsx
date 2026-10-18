@@ -19,8 +19,14 @@ import ProfileFavArticles from "./routes/Profile/ProfileFavArticles";
 import Settings from "./routes/Settings";
 import SignUp from "./routes/SignUp";
 
+// React.StrictMode's development-mode double-invoke behavior can cause a
+// single real click to fire its handler twice, which Playwright's network
+// mocking can't tell apart from a genuine double-request bug - skip it only
+// for e2e runs (see playwright.config.ts's webServer env), not local dev.
+const StrictModeOrFragment = import.meta.env.VITE_E2E === "true" ? React.Fragment : React.StrictMode;
+
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  <StrictModeOrFragment>
     <BrowserRouter>
       <AuthProvider>
         <Routes>
@@ -52,7 +58,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </Routes>
       </AuthProvider>
     </BrowserRouter>
-  </React.StrictMode>,
+  </StrictModeOrFragment>,
   );
 
 // If you want to start measuring performance in your app, pass a function
