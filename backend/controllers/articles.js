@@ -39,6 +39,7 @@ const allArticles = async (req, res, next) => {
           ...(author && { where: { username: author } }),
         },
       ],
+      distinct: true,
       limit: parseInt(limit),
       offset: parseInt(offset),
       order: [["createdAt", "DESC"]],
