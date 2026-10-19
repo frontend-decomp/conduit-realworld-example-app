@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import dateFormatter from "../../helpers/dateFormatter";
-import deleteComment from "../../services/deleteComment";
+import { useAuth } from "../context/AuthContext";
+import dateFormatter from "../helpers/dateFormatter";
+import deleteComment from "../services/deleteComment";
 import CommentAuthor from "./CommentAuthor";
 
 function CommentList({ comments, removeComment }) {
