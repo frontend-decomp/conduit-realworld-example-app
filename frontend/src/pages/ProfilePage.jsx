@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
-import AuthorInfo from "../../components/AuthorInfo";
-import ContainerRow from "../../components/ContainerRow";
-import NavItem from "../../components/NavItem";
+import AuthorInfo from "../components/AuthorInfo";
+import ContainerRow from "../components/ContainerRow";
+import NavItem from "../components/NavItem";
 
 function Profile() {
   const { state } = useLocation();

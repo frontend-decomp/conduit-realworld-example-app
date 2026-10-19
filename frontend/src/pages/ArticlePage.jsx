@@ -1,12 +1,12 @@
 import Markdown from "markdown-to-jsx";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useParams } from "react-router-dom";
-import ArticleMeta from "../../components/ArticleMeta";
-import ArticlesButtons from "../../components/ArticlesButtons";
-import ArticleTags from "../../components/ArticleTags";
-import BannerContainer from "../../components/BannerContainer";
-import { useAuth } from "../../context/AuthContext";
-import getArticle from "../../services/getArticle";
+import ArticleMeta from "../components/ArticleMeta";
+import ArticlesButtons from "../components/ArticlesButtons";
+import ArticleTags from "../components/ArticleTags";
+import BannerContainer from "../components/BannerContainer";
+import { useAuth } from "../context/AuthContext";
+import getArticle from "../services/getArticle";
 
 function Article() {
   const { state } = useLocation();

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import ArticlesPagination from "../../components/ArticlesPagination";
-import ArticlesPreview from "../../components/ArticlesPreview";
-import useArticleList from "../../hooks/useArticles";
+import ArticlesPagination from "../components/ArticlesPagination";
+import ArticlesPreview from "../components/ArticlesPreview";
+import useArticleList from "../hooks/useArticles";
 
 function ProfileArticles() {
   const { username } = useParams();

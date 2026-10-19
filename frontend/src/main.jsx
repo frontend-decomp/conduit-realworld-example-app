@@ -6,18 +6,18 @@ import AuthProvider from "./context/AuthContext";
 import "./styles.css";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import Article from "./routes/Article/Article";
-import CommentsSection from "./routes/Article/CommentsSection";
-import ArticleEditor from "./routes/ArticleEditor";
-import Home from "./routes/Home";
-import HomeArticles from "./routes/HomeArticles";
-import Login from "./routes/Login";
-import NotFound from "./routes/NotFound";
-import Profile from "./routes/Profile/Profile";
-import ProfileArticles from "./routes/Profile/ProfileArticles";
-import ProfileFavArticles from "./routes/Profile/ProfileFavArticles";
-import Settings from "./routes/Settings";
-import SignUp from "./routes/SignUp";
+import Article from "./pages/ArticlePage";
+import CommentsSection from "./pages/CommentsSectionPage";
+import ArticleEditor from "./pages/ArticleEditorPage";
+import Home from "./pages/HomePage";
+import HomeArticles from "./pages/FeedArticlesPage";
+import Login from "./pages/LoginPage";
+import NotFound from "./pages/NotFoundPage";
+import Profile from "./pages/ProfilePage";
+import ProfileArticles from "./pages/ProfileArticlesPage";
+import ProfileFavArticles from "./pages/ProfileFavArticlesPage";
+import Settings from "./pages/SettingsPage";
+import SignUp from "./pages/SignUpPage";
 
 // React.StrictMode's development-mode double-invoke behavior can cause a
 // single real click to fire its handler twice, which Playwright's network

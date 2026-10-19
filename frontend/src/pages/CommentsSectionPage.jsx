@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import CommentEditor from "../../components/CommentEditor";
-import CommentList from "../../components/CommentList";
-import getComments from "../../services/getComments";
+import CommentEditor from "../components/CommentEditor";
+import CommentList from "../components/CommentList";
+import getComments from "../services/getComments";
 
 function CommentsSection() {
   const [comments, setComments] = useState([]);
