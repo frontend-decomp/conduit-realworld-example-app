@@ -8,6 +8,7 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "frontend/src/setupTests.js",
     css: true,
+    execArgv: ["--no-experimental-webstorage"],
     coverage: {
       include: ["frontend/src/**/*.{js,jsx}"],
       exclude: ["**/*.test.*", "**/*.spec.*", "frontend/src/setupTests.js"],
