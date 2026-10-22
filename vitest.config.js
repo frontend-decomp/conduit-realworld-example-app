@@ -8,5 +8,9 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "frontend/src/setupTests.js",
     css: true,
+    coverage: {
+      include: ["frontend/src/**/*.{js,jsx}"],
+      exclude: ["**/*.test.*", "**/*.spec.*", "frontend/src/setupTests.js"],
+    },
   },
 });
